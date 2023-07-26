@@ -18,6 +18,13 @@ def show_game(id):
         game_user=User.query.get(game.user_id)
     else:
         game_user=None
+        date=datetime.date.today()
+        all_users=users
+        users=[]
+        for user in all_users:
+            age=date.year - user.dob.year - ((date.month, date.day) < (user.dob.month, user.dob.day))
+            if age>=game.age_rating:
+                users.append(user)
     return render_template("show_game.jinja",game=game,users=users,game_user=game_user)
 
 @games_blueprint.route("/games/<id>/delete",methods=["POST"])
@@ -27,14 +34,10 @@ def delete_game(id):
     db.session.commit()
     return redirect("/games")
 
-@games_blueprint.route("/users")
-def users():
-    users=User.query.all() # sort this alphabetically if we add a user edit function
-    return render_template("users.jinja",users=users)
-
 @games_blueprint.route("/games/<id>/check_out",methods=["POST"])
 def check_out(id):
     user_id=request.form["user"]
+    user=User.query.get(user_id)
     game=Game.query.get(id)
     game.check_out(user_id)
     db.session.commit()

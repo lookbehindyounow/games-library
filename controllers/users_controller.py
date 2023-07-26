@@ -5,6 +5,11 @@ import datetime
 
 users_blueprint=Blueprint("users",__name__)
 
+@users_blueprint.route("/users")
+def users():
+    users=User.query.all() # sort this alphabetically if we add a user edit function
+    return render_template("users.jinja",users=users)
+
 @users_blueprint.route("/users/<id>")
 def show_user(id):
     user=User.query.get(id)
