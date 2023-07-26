@@ -24,3 +24,9 @@ class Game(db.Model):
     
     def __repr__(self):
         return f"<Game {self.id}: {self.title} - rated {self.age_rating}>"
+    
+    def check_in(self):
+        del self.user_id
+    
+    def check_out(self,user_id):
+        self.user_id=user_id

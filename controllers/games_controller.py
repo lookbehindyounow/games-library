@@ -41,6 +41,16 @@ def show_user(id):
     games=[game for game in all_games if game.user_id==id]
     return render_template("show_user.jinja",user=user,games=games,age=age)
 
+@games_blueprint.route("/users/<id>/delete",methods=["POST"])
+def delete_user(id):
+    user=User.query.get(id)
+    games=Game.query.all()
+    user_games=[game for game in games if game.user_id==int(id)]
+    [game.check_in() for game in user_games]
+    db.session.delete(user)
+    db.session.commit()
+    return redirect("/users") # if users page is removed change this redirect to /games
+
 # @tasks_blueprint.route("/tasks")
 def tasks():
     tasks=Task.query.all()
