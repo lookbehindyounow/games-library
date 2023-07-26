@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, Blueprint, request
 from models import Game, User
 from app import db
+import datetime
 
 games_blueprint=Blueprint("games",__name__)
 
@@ -11,13 +12,34 @@ def games():
 
 @games_blueprint.route("/games/<id>")
 def show_game(id):
-    game=Game.query.get(id)
     users=User.query.all()
+    game=Game.query.get(id)
     if game.user_id is not None:
         game_user=User.query.get(game.user_id)
     else:
         game_user=None
     return render_template("show_game.jinja",game=game,users=users,game_user=game_user)
+
+@games_blueprint.route("/games/<id>/delete",methods=["POST"])
+def delete_game(id):
+    game=Game.query.get(id)
+    db.session.delete(game)
+    db.session.commit()
+    return redirect("/games")
+
+@games_blueprint.route("/users")
+def users():
+    users=User.query.all()
+    return render_template("users.jinja",users=users)
+
+@games_blueprint.route("/users/<id>")
+def show_user(id):
+    user=User.query.get(id)
+    date=datetime.date.today()
+    age= date.year - user.dob.year - ((date.month, date.day) < (user.dob.month, user.dob.day))
+    all_games=Game.query.all()
+    games=[game for game in all_games if game.user_id==id]
+    return render_template("show_user.jinja",user=user,games=games,age=age)
 
 # @tasks_blueprint.route("/tasks")
 def tasks():
