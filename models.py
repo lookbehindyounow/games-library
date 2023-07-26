@@ -26,7 +26,7 @@ class Game(db.Model):
         return f"<Game {self.id}: {self.title} - rated {self.age_rating}>"
     
     def check_in(self):
-        del self.user_id
+        self.user_id=None
     
     def check_out(self,user_id):
         self.user_id=user_id

@@ -7,7 +7,7 @@ games_blueprint=Blueprint("games",__name__)
 
 @games_blueprint.route("/games")
 def games():
-    games=Game.query.all()
+    games=Game.query.all() # sort this alphabetically
     return render_template("index.jinja",games=games)
 
 @games_blueprint.route("/games/<id>")
@@ -29,14 +29,14 @@ def delete_game(id):
 
 @games_blueprint.route("/users")
 def users():
-    users=User.query.all()
+    users=User.query.all() # sort this alphabetically if we add a user edit function
     return render_template("users.jinja",users=users)
 
 @games_blueprint.route("/users/<id>")
 def show_user(id):
     user=User.query.get(id)
     date=datetime.date.today()
-    age= date.year - user.dob.year - ((date.month, date.day) < (user.dob.month, user.dob.day))
+    age=date.year - user.dob.year - ((date.month, date.day) < (user.dob.month, user.dob.day))
     all_games=Game.query.all()
     games=[game for game in all_games if game.user_id==id]
     return render_template("show_user.jinja",user=user,games=games,age=age)
@@ -50,6 +50,21 @@ def delete_user(id):
     db.session.delete(user)
     db.session.commit()
     return redirect("/users") # if users page is removed change this redirect to /games
+
+@games_blueprint.route("/games/<id>/check_out",methods=["POST"])
+def check_out(id):
+    user_id=request.form["user"]
+    game=Game.query.get(id)
+    game.check_out(user_id)
+    db.session.commit()
+    return redirect(f"/games/{id}")
+
+@games_blueprint.route("/games/<id>/check_in",methods=["POST"])
+def check_in(id):
+    game=Game.query.get(id)
+    game.check_in()
+    db.session.commit()
+    return redirect(f"/games/{id}")
 
 # @tasks_blueprint.route("/tasks")
 def tasks():
