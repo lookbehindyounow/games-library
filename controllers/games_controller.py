@@ -66,6 +66,21 @@ def check_in(id):
     db.session.commit()
     return redirect(f"/games/{id}")
 
+@games_blueprint.route("/games/new")
+def new_game_form():
+    return render_template("new_game.jinja")
+
+@games_blueprint.route("/games",methods=["POST"])
+def add_game():
+    game=Game(title=request.form["title"],
+              genre=request.form["genre"],
+              description=request.form["description"],
+              age_rating=request.form["age_rating"]
+    )
+    db.session.add(game)
+    db.session.commit()
+    return redirect("/games")
+
 # @tasks_blueprint.route("/tasks")
 def tasks():
     tasks=Task.query.all()

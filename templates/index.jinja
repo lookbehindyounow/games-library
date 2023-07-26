@@ -8,7 +8,13 @@
       <p>{{game.genre}}</p>
     </div>
     <div class="game__age_rating">
-      <p>{{game.age_rating}}</p>
+      <p>
+      {% if game.age_rating==0 %}
+        U
+      {% else %}
+        {{game.age_rating}}
+      {% endif %}
+      </p>
     </div>
   </div>
   <hr />
