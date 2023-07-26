@@ -9,6 +9,16 @@ def games():
     games=Game.query.all()
     return render_template("index.jinja",games=games)
 
+@games_blueprint.route("/games/<id>")
+def show_game(id):
+    game=Game.query.get(id)
+    users=User.query.all()
+    if game.user_id is not None:
+        game_user=User.query.get(game.user_id)
+    else:
+        game_user=None
+    return render_template("show_game.jinja",game=game,users=users,game_user=game_user)
+
 # @tasks_blueprint.route("/tasks")
 def tasks():
     tasks=Task.query.all()
