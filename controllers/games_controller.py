@@ -1,7 +1,7 @@
 from flask import render_template, redirect, Blueprint, request
 from models import Game, User
 from app import db
-import datetime # will need later for age checks
+import datetime
 
 games_blueprint=Blueprint("games",__name__)
 
