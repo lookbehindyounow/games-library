@@ -1,0 +1,30 @@
+{% extends 'base.jinja' %}{% block content %}
+    <form action="/tasks/{{task.id}}" method="post">
+        <div>
+            <label for="description">Description</label>
+            <input type="text" id="description" name="description" value="{{task.description}}" required autofocus/>
+        </div>
+        <div>
+            <label for="duration">Duration</label>
+            <input type="number" id="duration" name="duration" value="{{task.duration}}" required/>
+        </div>
+        <div>
+            <label for="completed">Completed</label>
+            <input type="checkbox" id="completed" name="completed" {% if task.completed %}
+                checked
+            {% endif %}/>
+        </div>
+        <div>
+            <label for="user">User:</label>
+            <select name="user" id="user">
+                {% for user in users %}
+                <option value="{{user.id}}" {% if user.id==task.user.id %}
+                    selected
+                {% endif %}>
+                {{user.first_name}} {{user.last_name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit">Update Task</button>
+    </form>
+{% endblock content %}
