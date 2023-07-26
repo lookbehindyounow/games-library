@@ -1,7 +1,7 @@
-from flask import Flask, render_template, redirect, Blueprint, request
+from flask import render_template, redirect, Blueprint, request
 from models import Game, User
 from app import db
-import datetime
+import datetime # will need later for age checks
 
 games_blueprint=Blueprint("games",__name__)
 
@@ -31,25 +31,6 @@ def delete_game(id):
 def users():
     users=User.query.all() # sort this alphabetically if we add a user edit function
     return render_template("users.jinja",users=users)
-
-@games_blueprint.route("/users/<id>")
-def show_user(id):
-    user=User.query.get(id)
-    date=datetime.date.today()
-    age=date.year - user.dob.year - ((date.month, date.day) < (user.dob.month, user.dob.day))
-    all_games=Game.query.all()
-    games=[game for game in all_games if game.user_id==id]
-    return render_template("show_user.jinja",user=user,games=games,age=age)
-
-@games_blueprint.route("/users/<id>/delete",methods=["POST"])
-def delete_user(id):
-    user=User.query.get(id)
-    games=Game.query.all()
-    user_games=[game for game in games if game.user_id==int(id)]
-    [game.check_in() for game in user_games]
-    db.session.delete(user)
-    db.session.commit()
-    return redirect("/users") # if users page is removed change this redirect to /games
 
 @games_blueprint.route("/games/<id>/check_out",methods=["POST"])
 def check_out(id):

@@ -10,4 +10,6 @@ db=SQLAlchemy(app)
 migrate=Migrate(app,db)
 
 from controllers.games_controller import games_blueprint
+from controllers.users_controller import users_blueprint
 app.register_blueprint(games_blueprint)
+app.register_blueprint(users_blueprint)
